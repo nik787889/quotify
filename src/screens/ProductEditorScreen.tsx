@@ -95,7 +95,7 @@ export default function ProductEditorScreen({ navigation, route }: Props) {
 
     // ── Real-time computation ──────────────────────────────────────────
 
-    const updateProductField = (field: 'name' | 'description' | 'ratePerSqft' | 'pricingType' | 'quantity', value: string) => {
+    const updateProductField = (field: 'name' | 'description' | 'ratePerSqft' | 'pricingType' | 'quantity' | 'fixedTotalSqft' | 'fixedRatePerSqft', value: string) => {
         setProduct((prev) => {
             const updated = { ...prev, [field]: value };
             return recalculateProduct(updated as Product);
@@ -235,6 +235,25 @@ export default function ProductEditorScreen({ navigation, route }: Props) {
                         />
                     )}
 
+                    {pType === 'fixed' && (
+                        <>
+                            <FieldInput
+                                label="Total SQFT (Optional)"
+                                value={product.fixedTotalSqft || ''}
+                                onChangeText={(v) => updateProductField('fixedTotalSqft', v)}
+                                placeholder="e.g. 150"
+                                keyboardType="decimal-pad"
+                            />
+                            <FieldInput
+                                label="Rate Per SQFT (Optional)"
+                                value={product.fixedRatePerSqft || ''}
+                                onChangeText={(v) => updateProductField('fixedRatePerSqft', v)}
+                                placeholder="e.g. 80"
+                                keyboardType="decimal-pad"
+                            />
+                        </>
+                    )}
+
                     <FieldInput
                         label={
                             pType === 'sqft' ? 'Rate per Sq.ft (₹)' :
@@ -244,6 +263,7 @@ export default function ProductEditorScreen({ navigation, route }: Props) {
                         onChangeText={(v) => updateProductField('ratePerSqft', v)}
                         placeholder={pType === 'sqft' ? 'e.g. 650' : 'e.g. 1500'}
                         keyboardType="decimal-pad"
+                        editable={!(pType === 'fixed' && Number(product.fixedTotalSqft) > 0 && Number(product.fixedRatePerSqft) > 0)}
                     />
                 </View>
 
@@ -440,6 +460,7 @@ function FieldInput({
     placeholder,
     multiline,
     keyboardType,
+    editable = true,
 }: {
     label: string;
     value: string;
@@ -447,18 +468,24 @@ function FieldInput({
     placeholder?: string;
     multiline?: boolean;
     keyboardType?: 'default' | 'decimal-pad';
+    editable?: boolean;
 }) {
     return (
         <View style={fieldStyles.wrapper}>
             <Text style={fieldStyles.label}>{label}</Text>
             <TextInput
-                style={[fieldStyles.input, multiline && { height: 56, textAlignVertical: 'top' }]}
+                style={[
+                    fieldStyles.input,
+                    multiline && { height: 56, textAlignVertical: 'top' },
+                    !editable && { backgroundColor: COLORS.surfaceVariant, color: COLORS.textSecondary }
+                ]}
                 value={value}
                 onChangeText={onChangeText}
                 placeholder={placeholder}
                 placeholderTextColor="#AAB4C8"
                 multiline={multiline}
                 keyboardType={keyboardType || 'default'}
+                editable={editable}
             />
         </View>
     );

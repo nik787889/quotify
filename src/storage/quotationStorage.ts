@@ -47,8 +47,23 @@ export const recalculateProduct = (product: import('../types').Product): import(
     const rate = parseFloat(product.ratePerSqft) || 0;
 
     if (pType === 'fixed') {
-        const totalAmount = rate;
-        return { ...product, totalSqft: 0, totalAmount, quantity: '1' };
+        let totalAmount = rate;
+        const fSqft = parseFloat(product.fixedTotalSqft || '') || 0;
+        const fRate = parseFloat(product.fixedRatePerSqft || '') || 0;
+
+        // If both are entered and greater than 0, calculate total amount automatically
+        if (fSqft > 0 && fRate > 0) {
+            totalAmount = fSqft * fRate;
+            return {
+                ...product,
+                totalSqft: fSqft,
+                totalAmount,
+                quantity: '1',
+                ratePerSqft: totalAmount.toString() // Update 'Total Amount' field text automatically
+            };
+        }
+
+        return { ...product, totalSqft: fSqft > 0 ? fSqft : 0, totalAmount, quantity: '1' };
     }
 
     if (pType === 'item') {
