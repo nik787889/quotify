@@ -179,8 +179,8 @@ function ProductTableGroup({ product }: { product: Product }) {
                     w = '—';
                     l = '—';
                     q = '—';
-                    s = '—';
-                    rate = '—';
+                    s = product.totalSqft > 0 ? fmt(product.totalSqft) : '—';
+                    rate = (Number(product.fixedTotalSqft) > 0 && Number(product.fixedRatePerSqft) > 0) ? product.fixedRatePerSqft || '—' : '—';
                 } else if (pType === 'item') {
                     w = '—';
                     l = '—';
@@ -228,7 +228,7 @@ function ProductTableGroup({ product }: { product: Product }) {
                         {isLast ? (
                             <>
                                 <Text style={[styles.td, styles.tdTotal, { flex: 1.2 }]}>
-                                    {pType === 'fixed' ? '—' : `₹${rate}`}
+                                    {pType === 'fixed' ? (rate !== '—' ? `₹${rate}` : '—') : `₹${rate}`}
                                 </Text>
                                 <Text style={[styles.td, styles.tdAmount, { flex: 1.5 }]}>
                                     ₹{fmt(product.totalAmount)}
