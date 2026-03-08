@@ -29,7 +29,9 @@ export const generateQuotationHTML = (q: Quotation): string => {
       let totalQtyOrSqft = fmt(product.totalSqft);
 
       if (pType === 'fixed') {
-        w = ''; l = ''; qStr = ''; s = ''; rate = ''; totalQtyOrSqft = '';
+        w = ''; l = ''; qStr = ''; s = product.totalSqft > 0 ? fmt(product.totalSqft) : '';
+        rate = (Number(product.fixedTotalSqft) > 0 && Number(product.fixedRatePerSqft) > 0) ? product.fixedRatePerSqft || '' : '';
+        totalQtyOrSqft = '';
       } else if (pType === 'item') {
         w = ''; l = ''; qStr = product.quantity || '1'; s = ''; totalQtyOrSqft = qStr;
       }
@@ -163,7 +165,9 @@ export const exportToExcel = async (quotation: Quotation): Promise<void> => {
       let totalQtyOrSqft = String(product.totalSqft);
 
       if (pType === 'fixed') {
-        w = ''; l = ''; qStr = ''; s = ''; rate = ''; totalQtyOrSqft = '';
+        w = ''; l = ''; qStr = ''; s = product.totalSqft > 0 ? String(product.totalSqft) : '';
+        rate = (Number(product.fixedTotalSqft) > 0 && Number(product.fixedRatePerSqft) > 0) ? product.fixedRatePerSqft || '' : '';
+        totalQtyOrSqft = '';
       } else if (pType === 'item') {
         w = ''; l = ''; qStr = product.quantity || '1'; s = ''; totalQtyOrSqft = qStr;
       }

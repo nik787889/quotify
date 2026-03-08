@@ -33,6 +33,10 @@ export interface Product {
   // For 'item' type
   quantity?: string;     // user input string for item quantity
 
+  // For 'fixed' type optional computation
+  fixedTotalSqft?: string;
+  fixedRatePerSqft?: string;
+
   totalAmount: number;   // computed based on pricingType
 }
 
